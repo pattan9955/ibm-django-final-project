@@ -32,7 +32,8 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ["question_text"]
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ["choice_text"]
+    list_display = ["choice_text", "question", "is_correct"]
+    list_filter = ["is_correct", "question"]
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
