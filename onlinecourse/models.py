@@ -97,7 +97,7 @@ class Enrollment(models.Model):
 class Question(models.Model):
     lesson = models.ForeignKey(Course, on_delete=models.CASCADE)
     question_text = models.TextField()
-    grade = models.FloatField()
+    grade = models.IntegerField()
 
     def is_get_score(self, selected_ids):
        all_answers = self.choice_set.filter(is_correct=True).count()

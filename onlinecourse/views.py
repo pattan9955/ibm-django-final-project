@@ -49,7 +49,8 @@ def show_exam_result(request, course_id, submission_id):
         "course": course,
         "selected_ids": choice_ids,
         "grade": score,
-        "max_grade": max_grade
+        "max_grade": max_grade,
+        "pct_grade": score / max_grade
     }
 
     return render(request, "onlinecourse/exam_result_bootstrap.html", context)
