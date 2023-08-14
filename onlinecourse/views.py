@@ -30,6 +30,30 @@ def submit(request, course_id):
 
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course_id, submission.id,)))
 
+def show_exam_result(request, course_id, submission_id):
+    course = get_object_or_404(Course, pk=course_id)
+    submission = Submission.objects.get(id=submission_id)
+    choices = submission.choices.all()
+    questions = course.question_set.all()
+
+    choice_ids = [choice.id for choice in choices]
+    
+    score = 0
+    max_grade = 0
+    for question in questions:
+        max_grade += question.grade
+        if question.is_get_score(choice_ids):
+            score += question.grade
+
+    context = {
+        "course": course,
+        "selected_ids": choice_ids,
+        "grade": score,
+        "max_grade": max_grade
+    }
+
+    return render(request, "onlinecourse/exam_result_bootstrap.html", context)
+
 # <HINT> Create a submit view to create an exam submission record for a course enrollment,
 # you may implement it based on following logic:
          # Get user and course object, then get the associated enrollment object created when the user enrolled the course
@@ -136,25 +160,3 @@ def enroll(request, course_id):
         # Get the selected choice ids from the submission record
         # For each selected choice, check if it is a correct answer or not
         # Calculate the total score
-
-def show_exam_result(request, course_id, submission_id):
-    course = get_object_or_404(Course, pk=course_id)
-    submission = Submission.objects.get(id=submission_id)
-    choices = submission.choices.all()
-    questions = course.question_set.all()
-    
-    score = 0
-    max_grade = 0
-    for question in questions:
-        max_grade += question.grade
-        if question.is_get_score(choices):
-            score += question.grade
-
-    context = {
-        "course": course,
-        "selected_ids": choice_ids,
-        "grade": score,
-        "max_grade": max_grade
-    }
-
-    return render(request, "onlinecourse/exam_result_bootstrap.html", context)
